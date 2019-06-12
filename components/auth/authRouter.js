@@ -5,6 +5,8 @@ const bcrypt = require('bcryptjs');
 
 const authModel = require('./authModel')
 
+const generateToken = require('../../config/token/generateToken')
+
 /****************************************************************************/
 /*                              Get all Users                               */
 /****************************************************************************/
@@ -30,12 +32,31 @@ router.post('/register', userInfoExist, async (req,res) => {
 
     try {
         id = await authModel.add(user);
-        res.status(201).json({message: `id of new user: ${id}`});
+        const token = generateToken(user);
+        res.status(201).json({message: `id of new user: ${id}`, token});
     }
     catch {
         res.status(500).json({"errorMessage": "That was a problem adding the record(s)"})
     }
 })
+
+// /****************************************************************************/
+// /*                              user Login                                  */
+// /****************************************************************************/
+
+// router.post('/login', async (req,res) => {
+//     let user = req.body;
+//     const hash = bcrypt.hashSync(user.password, 10);
+//     user.password = hash;
+
+//     try {
+//         id = await authModel.add(user);
+//         res.status(201).json({message: `id of new user: ${id}`});
+//     }
+//     catch {
+//         res.status(500).json({"errorMessage": "That was a problem adding the record(s)"})
+//     }
+// })
 
 
 /*********************************************************************************************************/
@@ -47,7 +68,7 @@ router.post('/register', userInfoExist, async (req,res) => {
 /****************************************************************************/
 async function userInfoExist(req, res, next) {
     const body = req.body
-    if(body.username && body.password) {
+    if(body.username && body.password && body.department) {
         next();
     }
     else {
