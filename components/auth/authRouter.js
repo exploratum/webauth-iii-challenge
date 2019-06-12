@@ -7,10 +7,14 @@ const authModel = require('./authModel')
 
 const generateToken = require('../../config/token/generateToken')
 
+const secrets = require('../../config/token/secrets')
+
+const jwt = require('jsonwebtoken')
+
 /****************************************************************************/
 /*                              Get all Users                               */
 /****************************************************************************/
-router.get('/users', async (req, res) => {
+router.get('/users', validateCredentials, async (req, res) => {
     try {
         users = await authModel.findAll();
         res.status(200).json(users);
@@ -92,5 +96,29 @@ async function userCredentialsExist(req, res, next) {
         res.status(400).json({"errorMessage":"name and password are required"});
     }
 }
+
+/****************************************************************************/
+/*                          Validate Credentials                            */
+/****************************************************************************/
+async function validateCredentials(req,res,next) {
+    const token = req.headers.authorization;
+
+    if (token) {
+        jwt.verify(token, secrets.jwtSecret, (err, decodeToken) =>  {
+            if(err) {
+                res.status(401).json({ message: 'Invalid Credentials' });
+            }
+            else {
+                req.user = { roles: decodeToken.roles, username: decodeToken.username };
+                next();
+            }
+        })
+    } 
+    else {
+        res.status(400).json({ message: 'No token provided' });
+    }
+}
+
+
 
 module.exports = router;
