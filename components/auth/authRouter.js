@@ -31,7 +31,7 @@ router.post('/register', userInfoExist, async (req,res) => {
     user.password = hash;
 
     try {
-        id = await authModel.add(user);
+        id = await authModel.findBy(username);
         const token = generateToken(user);
         res.status(201).json({message: `id of new user: ${id}`, token});
     }
@@ -40,23 +40,27 @@ router.post('/register', userInfoExist, async (req,res) => {
     }
 })
 
-// /****************************************************************************/
-// /*                              user Login                                  */
-// /****************************************************************************/
+/****************************************************************************/
+/*                              user Login                                  */
+/****************************************************************************/
 
-// router.post('/login', async (req,res) => {
-//     let user = req.body;
-//     const hash = bcrypt.hashSync(user.password, 10);
-//     user.password = hash;
+router.post('/login', userCredentialsExist, async (req,res) => {
+    let {username, password} = req.body;
 
-//     try {
-//         id = await authModel.add(user);
-//         res.status(201).json({message: `id of new user: ${id}`});
-//     }
-//     catch {
-//         res.status(500).json({"errorMessage": "That was a problem adding the record(s)"})
-//     }
-// })
+    try {
+        let user = await authModel.findBy({username});
+        if(user && bcrypt.compareSync(password, user.password)) {
+            const token = generateToken(user);
+            res.status(201).json({message: `welcome ${user.username}`, token});
+        }
+        else {
+            res.status(401).json({ message: 'Invalid Credentials' });
+        }
+    }
+    catch {
+        res.status(500).json({"errorMessage": "That was a problem loggin in"})
+    }
+})
 
 
 /*********************************************************************************************************/
@@ -64,7 +68,7 @@ router.post('/register', userInfoExist, async (req,res) => {
 /******************************************************************************************************** */
 
 /****************************************************************************/
-/*                Check if username and password exist in body              */
+/*           Check if username, password and department exist in body       */
 /****************************************************************************/
 async function userInfoExist(req, res, next) {
     const body = req.body
@@ -72,9 +76,21 @@ async function userInfoExist(req, res, next) {
         next();
     }
     else {
-        res.status(400).json({"errorMessage":"name and password are required"});
+        res.status(400).json({"errorMessage":"name,password and department are required"});
     }
 }
 
+/****************************************************************************/
+/*                      Check if credentials exist in body                  */
+/****************************************************************************/
+async function userCredentialsExist(req, res, next) {
+    const body = req.body
+    if(body.username && body.password) {
+        next();
+    }
+    else {
+        res.status(400).json({"errorMessage":"name and password are required"});
+    }
+}
 
 module.exports = router;
