@@ -1,6 +1,8 @@
 const express = require('express');
 const server = express();
 
+const authRouter = require('./components/auth/authRouter')
+
 server.use(express.json());
 server.use(logger);
 
@@ -9,6 +11,8 @@ server.use(logger);
 server.get('/', (req,res) => {
     res.status(200).send("Wading in the world of Auth")
 })
+
+server.use('/api', authRouter)
 
 
 /**************************************/
