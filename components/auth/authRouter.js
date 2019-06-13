@@ -12,11 +12,12 @@ const secrets = require('../../config/token/secrets')
 const jwt = require('jsonwebtoken')
 
 /****************************************************************************/
-/*                              Get all Users                               */
+/*                      Get all Users from same departmnent                 */
 /****************************************************************************/
 router.get('/users', validateCredentials, async (req, res) => {
     try {
-        users = await authModel.findAll();
+        let {department} = req.user;
+        users = await authModel.findAllIn({department});
         res.status(200).json(users);
     }
     catch {
@@ -33,7 +34,6 @@ router.post('/register', userInfoExist, async (req,res) => {
     let user = req.body;
     const hash = bcrypt.hashSync(user.password, 10);
     user.password = hash;
-    console.log('user: ', user);
 
 
     try {
@@ -111,7 +111,7 @@ async function validateCredentials(req,res,next) {
                 res.status(401).json({ message: 'Invalid Credentials' });
             }
             else {
-                req.user = { roles: decodeToken.roles, username: decodeToken.username };
+                req.user = { department: decodeToken.department, username: decodeToken.username };
                 next();
             }
         })

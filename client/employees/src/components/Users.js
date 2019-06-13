@@ -19,13 +19,13 @@ class Users extends React.Component {
             })
             .get('http://localhost:5000/api/users')
             .then(res => {
-                console.log(res.data);
                 this.setState({users: res.data})
             })
             .catch(err => console.log(err))
         }
         else {
-            this.props.history.push('/login')
+            window.alert("You need to login first");
+            this.props.history.push('/signin')
         }
     }
  
@@ -36,11 +36,14 @@ class Users extends React.Component {
                     <Row className='headers'>
                         <Col>Id</Col>
                         <Col>username</Col>
+                        <Col>department</Col>
+
                     </Row>
                     {this.state.users.map(user => 
                         <Row key={user.id} className='user'>
                             <Col>{user.id}</Col>
                             <Col>{user.username}</Col>
+                            <Col>{user.department}</Col>
                         </Row>
                     )}
                 </Container>

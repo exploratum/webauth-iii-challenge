@@ -16,7 +16,7 @@ class Signin extends React.Component {
         return (  
             <Container className="signup">
                 <h2>Login</h2>
-                <Form  >
+                <Form onSubmit={this.handleSigninSubmit} >
                     <FormGroup>
                         <Col>
                             <Label>Name</Label>
@@ -37,7 +37,7 @@ class Signin extends React.Component {
                         </Col>
                     </FormGroup>
     
-                    <Button type='submit' onClick={this.handleSigninSubmit}>Sign In</Button>
+                    <Button type='submit'>Sign In</Button>
                 </Form>
             </Container>
         )

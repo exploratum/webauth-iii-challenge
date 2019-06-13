@@ -5,11 +5,13 @@ const secrets = require('./secrets');
 
 
 function generateToken(user) {
+
     const payload = {
       subject: user.id, // standard claim = sub
       username: user.username,
-      roles: ['student'],
+      department: user.department,
     };
+
   
     const options = {
       expiresIn: '1d',
