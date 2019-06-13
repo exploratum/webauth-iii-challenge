@@ -14,4 +14,17 @@
   margin-bottom: 30px;
 }
 
+.users{
+  margin: 0 auto;
+  width:400px;
+}
+
+.headers {
+  font-weight: bold;
+  border: 1px solid grey;
+}
+.user {
+  border: 1px solid grey;
+}
+
  

@@ -30,7 +30,7 @@ class Signup extends React.Component {
         return (  
             <Container className="signup">
                 <h2>Register</h2>
-                <Form >
+                <Form onSubmit={this.handleSignupSubmit}>
                     <FormGroup>
                         <Col>
                             <Label>Name</Label>
@@ -60,7 +60,7 @@ class Signup extends React.Component {
                         </Col>
                     </FormGroup>
     
-                    <Button type='submit' onClick={this.handleSignupSubmit}>Sign Up</Button>
+                    <Button type='submit'>Sign Up</Button>
                 </Form>
             </Container>
         )
