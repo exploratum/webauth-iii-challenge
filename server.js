@@ -1,8 +1,11 @@
 const express = require('express');
 const server = express();
 
+const cors = require('cors')
+
 const authRouter = require('./components/auth/authRouter')
 
+server.use(cors());
 server.use(express.json());
 server.use(logger);
 

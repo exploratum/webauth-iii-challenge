@@ -33,9 +33,11 @@ router.post('/register', userInfoExist, async (req,res) => {
     let user = req.body;
     const hash = bcrypt.hashSync(user.password, 10);
     user.password = hash;
+    console.log('user: ', user);
+
 
     try {
-        id = await authModel.findBy(username);
+        id = await authModel.add(user);
         const token = generateToken(user);
         res.status(201).json({message: `id of new user: ${id}`, token});
     }
